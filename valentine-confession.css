@@ -66,6 +66,7 @@ body {
   font-optical-sizing: auto;
 	font-size: clamp(16px, 10vw, 17px);
 	text-align: justify;
+	word-spacing: normal;
 	line-height: 1.5em;
 	width: 80%;
 	max-width: 550px;
