@@ -7,6 +7,12 @@
     <style>
       @import url(https://fonts.googleapis.com/css?family=Lato:300italic);
 
+      :root {
+        --gold-color: #f9d976;
+        --gold-shadow: rgba(138, 83, 13, 0.65);
+        --gold-gradient: linear-gradient(120deg, #fef3c1, #f5c258, #d48b1a);
+      }
+
       html,
       body {
         width: 100%;
@@ -17,6 +23,8 @@
 
       body {
         background: #271047;
+        color: var(--gold-color);
+        text-shadow: 0 0 15px var(--gold-shadow);
       }
 
       .name{
@@ -45,7 +53,7 @@
         height: 35px;
         transform: translateY(-300px);
         backface-visibility: hidden;
-        animation: in 500ms 6s ease-out forwards;
+        animation: in 500ms 3s ease-out forwards;
       }
       .cake:after,
       .cake:before {
@@ -77,19 +85,19 @@
         height: 18px;
       }
       .fuego:nth-child(1) {
-        animation: fuego 2s 6.5s infinite;
+        animation: fuego 2s 3.5s infinite;
       }
       .fuego:nth-child(2) {
-        animation: fuego 1.5s 6.5s infinite;
+        animation: fuego 1.5s 3.6s infinite;
       }
       .fuego:nth-child(3) {
-        animation: fuego 1s 6.5s infinite;
+        animation: fuego 1s 3.7s infinite;
       }
       .fuego:nth-child(4) {
-        animation: fuego 0.5s 6.5s infinite;
+        animation: fuego 0.5s 3.8s infinite;
       }
       .fuego:nth-child(5) {
-        animation: fuego 0.2s 6.5s infinite;
+        animation: fuego 0.2s 3.9s infinite;
       }
 
       /* ============================================== Animation Fire
@@ -115,18 +123,166 @@
       }
 
       .text {
-        color: #8b6a60;
+        color: var(--gold-color);
         font-family: 'Lato', sans-serif;
         font-weight: 300;
         font-style:italic;
         text-align: center;
+        text-shadow: 0 0 15px var(--gold-shadow);
         h1 {
           font-size: 1.4em;
         }
       }
+      body.overlay-active .cake,
+      body.overlay-active .fuego {
+        animation-play-state: paused;
+      }
+      #slideshow {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background:rgb(31, 9, 65);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 600ms ease;
+        z-index: 3;
+        padding-top: 4rem;
+      }
+      #slideshow.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #slideshow img {
+        width: auto;
+        height: auto;
+        max-width: min(90vw, 900px);
+        max-height: min(80vh, 650px);
+        border-radius: 1rem;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 600ms ease;
+      }
+      .slideshow-title {
+        font-family: 'Lato', sans-serif;
+        font-size: clamp(1.8rem, 2vw + 1rem, 3rem);
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        background: var(--gold-gradient);
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        text-transform: uppercase;
+        text-shadow: 0 0 25px rgba(255, 223, 85, 0.9);
+        animation: slideTitle 2s ease;
+        position: absolute;
+        top: 3rem;
+        left: 0;
+        right: 0;
+        text-align: center;
+        margin: 0;
+        pointer-events: none;
+      }
+      @keyframes slideTitle {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      #start-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+        background: rgb(31, 9, 65);
+        color: #fff;
+        z-index: 10;
+        text-align: center;
+      }
+      #start-overlay::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 40%),
+          radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.15), transparent 50%);
+        opacity: 0;
+        animation: overlayGlow 3s ease-in-out infinite;
+        z-index: -1;
+      }
+      #start-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #start-overlay button {
+        padding: 0.75rem 2.5rem;
+        font-size: 1.2rem;
+        border-radius: 40px;
+        border: none;
+        background: linear-gradient(120deg, #ff8a00, #ffcd00, #ffe57f);
+        color: #271047;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+        box-shadow: 0 15px 35px rgba(255, 140, 0, 0.4);
+      }
+      #start-overlay button:active {
+        transform: scale(0.97);
+        box-shadow: inset 0 0 0 2px rgba(39, 16, 71, 0.3);
+      }
+      #start-overlay button:hover {
+        transform: translateY(-2px);
+        filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.4));
+      }
+      #start-overlay .overlay-message {
+        font-size: 2rem;
+        font-weight: 600;
+        background: var(--gold-gradient);
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        text-shadow: 0 0 25px rgba(255, 223, 85, 0.9);
+        animation: pulseText 2.5s ease-in-out infinite;
+      }
+      @keyframes overlayGlow {
+        0% {
+          opacity: 0.25;
+        }
+        50% {
+          opacity: 0.6;
+        }
+        100% {
+          opacity: 0.25;
+        }
+      }
+      @keyframes pulseText {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
     </style>
   </head>
-  <body>
+  <body class="overlay-active">
+    <div id="start-overlay">
+      <p class="overlay-message">Получить поздравления</p>
+      <button id="start-button" type="button">Открыть</button>
+    </div>
+    <audio id="birthday-music" src="Nikolaj_Baskov_-_Den_rozhdenie_(Rilds.com).mp3" loop></audio>
       <div class="cake">
         <div class="fuego"></div>
         <div class="fuego"></div>
@@ -211,7 +367,7 @@
         </path>
         <path fill="#a88679" d="M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
         C177.668,5.569,177.667,21.571,173.667,21.571z">
-            <animate id="bizcocho_1" attributeName="d" calcMode="spline" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1" begin="2s" dur="0.8s" fill="freeze" values="
+            <animate id="bizcocho_1" attributeName="d" calcMode="spline" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0.25 0 1 1; 0 0 1 1; 0.25 0 0.6 1" begin="indefinite" dur="0.8s" fill="freeze" values="
                               M173.667,21.571c-33.174,0-111.467,0-147.334,0c-4,0-4-16.002,0-16.002c39.836,0,105.982,0,147.334,0
         C177.668,5.569,177.667,21.571,173.667,21.571z
                               ;
@@ -286,5 +442,107 @@
         <h1>🎉 С Днем Рождения, Father! 🎂</h1>
          <p class="name">❤️👑🎁🥳</p>
       </div>
+      <div id="slideshow">
+        <div class="slideshow-title">Папе 50 лет</div>
+        <img id="slideshow-image" alt="Слайд-шоу" />
+      </div>
+      <script>
+        const audio = document.getElementById("birthday-music");
+        const slideshow = document.getElementById("slideshow");
+        const slideshowImage = document.getElementById("slideshow-image");
+        const overlay = document.getElementById("start-overlay");
+        const startButton = document.getElementById("start-button");
+        const cakeAnimationStarter = document.getElementById("bizcocho_1");
+
+        const photoFiles = [
+          "20250715_175803.jpg",
+          "20250716_111702.jpg",
+          "20250718_150022.jpg",
+          "20250726_201944.jpg",
+          "20250812_183847.jpg",
+          "20250829_204212.jpg",
+          "20250905_123311.jpg",
+          "20251024_221706.jpg",
+          "20251128_143639.jpg",
+          "20251128_144101.jpg",
+          "20251215_202102.jpg",
+          "20251215_202358.jpg",
+          "20251215_202421.jpg",
+          "20251215_202447.jpg",
+          "20251215_202500.jpg",
+          "20251215_202557.jpg",
+          "20251215_202613.jpg",
+          "20251215_202630.jpg",
+          "20251215_202706.jpg",
+          "20251215_202718.jpg",
+          "20251215_202818.jpg",
+          "20251215_203002.jpg",
+          "20251215_203011.jpg",
+          "20251215_203047.jpg",
+          "20251215_203058.jpg",
+          "20251215_203151.jpg",
+          "20251215_203207.jpg",
+          "20251215_203221.jpg",
+          "20251215_203555.jpg",
+          "20251215_203600.jpg",
+          "20251215_203612.jpg",
+          "20251215_203857.jpg",
+          "20251215_203914.jpg"
+        ];
+        const photoPaths = photoFiles.map((file) => `father%2050/${file}`);
+
+        let slideshowIndex = 0;
+        let slideshowInterval;
+        const slideshowDelayMs = 8000;
+
+        const attemptPlay = () => {
+          if (!audio) {
+            return;
+          }
+          audio.currentTime = 3;
+          const playPromise = audio.play();
+          if (playPromise && typeof playPromise.catch === "function") {
+            playPromise.catch(() => {
+              // Autoplay might be blocked; silently fail so the rest of the page still loads.
+            });
+          }
+        };
+
+        const showNextPhoto = () => {
+          if (!photoPaths.length) {
+            return;
+          }
+          slideshowImage.style.opacity = 0;
+          slideshowImage.src = photoPaths[slideshowIndex];
+          slideshowIndex = (slideshowIndex + 1) % photoPaths.length;
+        };
+
+        slideshowImage.onload = () => {
+          slideshowImage.style.opacity = 1;
+        };
+
+        const startSlideshow = () => {
+          if (!photoPaths.length) {
+            return;
+          }
+          slideshow.classList.add("active");
+          showNextPhoto();
+          slideshowInterval = setInterval(showNextPhoto, 5000);
+        };
+
+        const startExperience = () => {
+          if (startButton.disabled) {
+            return;
+          }
+          startButton.disabled = true;
+          overlay.classList.add("hidden");
+          document.body.classList.remove("overlay-active");
+          attemptPlay();
+          cakeAnimationStarter?.beginElement();
+          setTimeout(startSlideshow, slideshowDelayMs);
+        };
+
+        startButton.addEventListener("click", startExperience);
+      </script>
   </body>
 </html>
