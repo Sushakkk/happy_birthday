@@ -129,6 +129,7 @@
         font-style:italic;
         text-align: center;
         text-shadow: 0 0 15px var(--gold-shadow);
+        padding: 0 1.5rem;
         h1 {
           font-size: 1.4em;
         }
@@ -139,32 +140,46 @@
       }
       #slideshow {
         position: fixed;
-        inset: 0;
+        height: calc(100vh - 60px);
+        top: 20px;
+        left: 10px;
+        right: 10px;
+        bottom: auto;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         background:rgb(31, 9, 65);
         opacity: 0;
         pointer-events: none;
         transition: opacity 600ms ease;
         z-index: 3;
-        padding-top: 4rem;
+        padding: 30px 10px;
       }
       #slideshow.active {
         opacity: 1;
         pointer-events: auto;
       }
-      #slideshow img {
-        width: auto;
-        height: auto;
-        max-width: min(90vw, 900px);
-        max-height: min(80vh, 650px);
+      .slideshow-stack {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
         border-radius: 1rem;
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+
         object-fit: contain;
-        opacity: 0;
         transition: opacity 600ms ease;
+        opacity: 0;
+      }
+      .slide.visible {
+        opacity: 1;
       }
       .slideshow-title {
         font-family: 'Lato', sans-serif;
@@ -178,13 +193,10 @@
         text-transform: uppercase;
         text-shadow: 0 0 25px rgba(255, 223, 85, 0.9);
         animation: slideTitle 2s ease;
-        position: absolute;
-        top: 3rem;
-        left: 0;
-        right: 0;
+        margin-bottom: 1rem;
         text-align: center;
-        margin: 0;
         pointer-events: none;
+        padding: 0 1.5rem;
       }
       @keyframes slideTitle {
         from {
@@ -252,6 +264,7 @@
         background-clip: text;
         text-shadow: 0 0 25px rgba(255, 223, 85, 0.9);
         animation: pulseText 2.5s ease-in-out infinite;
+        padding: 0 1.5rem;
       }
       @keyframes overlayGlow {
         0% {
@@ -444,12 +457,15 @@
       </div>
       <div id="slideshow">
         <div class="slideshow-title">Папе 50 лет</div>
-        <img id="slideshow-image" alt="Слайд-шоу" />
+        <div class="slideshow-stack">
+          <img class="slide visible" alt="Слайд-шоу 1" />
+          <img class="slide" alt="Слайд-шоу 2" />
+        </div>
       </div>
       <script>
         const audio = document.getElementById("birthday-music");
         const slideshow = document.getElementById("slideshow");
-        const slideshowImage = document.getElementById("slideshow-image");
+        const slides = Array.from(document.querySelectorAll(".slide"));
         const overlay = document.getElementById("start-overlay");
         const startButton = document.getElementById("start-button");
         const cakeAnimationStarter = document.getElementById("bizcocho_1");
@@ -508,17 +524,22 @@
           }
         };
 
+        let activeSlideElementIndex = 0;
         const showNextPhoto = () => {
           if (!photoPaths.length) {
             return;
           }
-          slideshowImage.style.opacity = 0;
-          slideshowImage.src = photoPaths[slideshowIndex];
+          const nextIndex = (activeSlideElementIndex + 1) % slides.length;
+          const nextSlide = slides[nextIndex];
+          nextSlide.classList.remove("visible");
+          nextSlide.onload = () => {
+            nextSlide.classList.add("visible");
+            slides[activeSlideElementIndex].classList.remove("visible");
+            activeSlideElementIndex = nextIndex;
+            nextSlide.onload = null;
+          };
+          nextSlide.src = photoPaths[slideshowIndex];
           slideshowIndex = (slideshowIndex + 1) % photoPaths.length;
-        };
-
-        slideshowImage.onload = () => {
-          slideshowImage.style.opacity = 1;
         };
 
         const startSlideshow = () => {
