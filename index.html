@@ -525,6 +525,19 @@
         };
 
         let activeSlideElementIndex = 0;
+        const preloadSlides = () => {
+          slides.forEach((slide, idx) => {
+            if (!photoPaths[idx]) {
+              return;
+            }
+            slide.src = photoPaths[idx];
+            if (idx === 0) {
+              slide.classList.add("visible");
+            }
+          });
+          slideshowIndex = Math.min(photoPaths.length, slides.length);
+        };
+
         const showNextPhoto = () => {
           if (!photoPaths.length) {
             return;
@@ -547,9 +560,12 @@
             return;
           }
           slideshow.classList.add("active");
+          preloadSlides();
           showNextPhoto();
           slideshowInterval = setInterval(showNextPhoto, 5000);
         };
+
+        preloadSlides();
 
         const startExperience = () => {
           if (startButton.disabled) {
